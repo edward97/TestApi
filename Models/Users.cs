@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace TestApi.Models
 {
-    [Table("User")]
-    public class User
+    public class Users
     {
         [Key]
         public int Id { get; set; }

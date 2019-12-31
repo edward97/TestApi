@@ -14,5 +14,14 @@ namespace TestApi.Contracts.V1
             public const string Login = Base + "/identity/login";
             public const string Expired = Base + "/identity/expired";
         }
+
+        public static class Todos
+        {
+            public const string GetAll = Base + "/todos";
+            public const string Get = Base + "/todos/{id}";
+            public const string Create = Base + "/todos";
+            public const string Update = Base + "/todos/{id}";
+            public const string Delete = Base + "/todos/{id}";
+        }
     }
 }

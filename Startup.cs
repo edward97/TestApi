@@ -30,6 +30,7 @@ namespace TestApi
                 options.UseMySql(_config.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITodosService, TodosService>();
 
             services.AddCors(options =>
             {

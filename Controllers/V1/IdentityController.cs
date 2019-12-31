@@ -24,9 +24,10 @@ namespace TestApi.Controllers.V1
             _identityService = identityService;
         }
 
+        #region POST Login
         [HttpPost(ApiRoutes.Identity.Login)]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] IdentityRequest request)
+        public async Task<IActionResult> PostLogin([FromBody] IdentityRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -42,5 +43,6 @@ namespace TestApi.Controllers.V1
 
             return Ok(authResponse);
         }
+        #endregion
     }
 }

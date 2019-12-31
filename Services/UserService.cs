@@ -9,8 +9,8 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using TestApi.Data;
-using TestApi.Options;
 using TestApi.Models;
+using TestApi.Options;
 using TestApi.Contracts.V1.Responses;
 using BCrypt;
 
@@ -51,7 +51,7 @@ namespace TestApi.Services
             return GenerateAuthenticationResultForUser(user);
         }
 
-        private IdentityResponse GenerateAuthenticationResultForUser(User user)
+        private IdentityResponse GenerateAuthenticationResultForUser(Users user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -62,7 +62,7 @@ namespace TestApi.Services
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim("Username", user.Username)
+                    new Claim("username", user.Username)
                 }),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
