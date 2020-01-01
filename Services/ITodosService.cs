@@ -10,5 +10,9 @@ namespace TestApi.Services
     public interface ITodosService
     {
         Task<List<Todos>> GetTodosAsync(int userId);
+        Task<Todos> GetTodoByIdAsync(int todoId, int userId);
+        Task<Todos> CreateTodoAsync(Todos todo);
+        Task<Todos> UpdateTodoAsync(Todos todo);
+        Task<bool> DeleteTodoAsync(Todos todo);
     }
 }
