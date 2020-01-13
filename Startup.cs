@@ -78,7 +78,7 @@ namespace TestApi
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvc();
-            app.UseCors("AllowSpecificorigin");
+            app.UseCors("AllowSpecificOrigin");
         }
     }
 }
