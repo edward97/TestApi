@@ -23,7 +23,7 @@ namespace TestApi.Services
         public async Task<List<Todos>> GetTodosAsync(int userId)
         {
             return await _context.Todos
-                .Include(x => x.Users)
+                // .Include(x => x.Users)
                 .Where(x => x.userId == userId)
                 .ToListAsync();
         }

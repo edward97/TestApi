@@ -12,6 +12,7 @@ namespace TestApi.Contracts.V1
         public static class Identity
         {
             public const string Login = Base + "/identity/login";
+            public const string Register = Base + "/identity/register";
             public const string Expired = Base + "/identity/expired";
         }
 

@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TestApi.Models;
 using TestApi.Services;
 using TestApi.Contracts.V1;
 using TestApi.Contracts.V1.Requests;
@@ -34,14 +35,36 @@ namespace TestApi.Controllers.V1
                 return BadRequest(ModelState);
             }
 
-            var authResponse = await _identityService.LoginAsync(request.Username, request.Password);
+            var authResponse = await _identityService.LoginAsync(request.username, request.password);
 
-            if (!authResponse.Success)
+            if (!authResponse.success)
             {
                 return BadRequest(authResponse);
             }
 
             return Ok(authResponse);
+        }
+        #endregion
+
+        #region POST Register
+        [HttpPost(ApiRoutes.Identity.Register)]
+        [AllowAnonymous]
+        public async Task<IActionResult> PostRegister([FromBody] IdentityRegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Users user = new Users
+            {
+                email = request.email,
+                username = request.username,
+                password = request.password,
+                createdAt = DateTime.Now,
+                updatedAt = DateTime.Now
+            };
+            var registerResponse = await _identityService.RegisterAsync(user);
+            return Ok(registerResponse);
         }
         #endregion
     }

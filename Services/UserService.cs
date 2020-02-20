@@ -30,24 +30,51 @@ namespace TestApi.Services
         public async Task<IdentityResponse> LoginAsync(string username, string password)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
+                .FirstOrDefaultAsync(x => x.username == username);
             if (user == null)
             {
                 return new IdentityResponse
                 {
-                    Errors = new[] { "username does not exitst." }
+                    errors = new[] { "username does not exist." }
                 };
             }
 
-            var userHasValidPassword = BCryptHelper.CheckPassword(password, user.Password);
+            var userHasValidPassword = BCryptHelper.CheckPassword(password, user.password);
             if (!userHasValidPassword)
             {
                 return new IdentityResponse
                 {
-                    Errors = new[] { "email or password combination is wrong" }
+                    errors = new[] { "email or password combination is wrong." }
                 };
             }
+            return GenerateAuthenticationResultForUser(user);
+        }
 
+        public async Task<IdentityResponse> RegisterAsync(Users user)
+        {
+            var checkEmail = await _context.Users
+                .FirstOrDefaultAsync(x => x.email == user.email);
+            if (checkEmail != null)
+            {
+                return new IdentityResponse
+                {
+                    errors = new[] { "email already exist." }
+                };
+            }
+            var checkUsername = await _context.Users
+                .FirstOrDefaultAsync(x => x.username == user.username);
+            if (checkUsername != null)
+            {
+                return new IdentityResponse
+                {
+                    errors = new[] { "username already exist." }
+                };
+            }
+            string salt = BCryptHelper.GenerateSalt(10);
+            user.password = BCryptHelper.HashPassword(user.password, salt);
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
             return GenerateAuthenticationResultForUser(user);
         }
 
@@ -59,10 +86,10 @@ namespace TestApi.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim("username", user.Username)
+                    new Claim(JwtRegisteredClaimNames.Sub, user.email),
+                    new Claim(JwtRegisteredClaimNames.Jti, user.id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, user.email),
+                    new Claim("username", user.username)
                 }),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -71,11 +98,11 @@ namespace TestApi.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return new IdentityResponse
             {
-                Success = true,
-                Token = tokenHandler.WriteToken(token),
-                Id = user.Id,
-                Email = user.Email,
-                Username = user.Username
+                success = true,
+                token = tokenHandler.WriteToken(token),
+                id = user.id,
+                email = user.email,
+                username = user.username
             };
         }
     }
